@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Superstore Sales Performance Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#f4f6f9;--card:#fff;--tx:#1d2733;--mu:#667085;--bd:#e1e6ee;--ac:#1f6feb;--gd:#1a9850;--rd:#d73027;--gr:#e6e9ef;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151c;--card:#1a212b;--tx:#e8edf3;--mu:#98a2b3;--bd:#2b3441;--ac:#58a6ff;--gd:#3fb97a;--rd:#ff6b61;--gr:#2b3441}}
+:root[data-theme="dark"]{--bg:#10151c;--card:#1a212b;--tx:#e8edf3;--mu:#98a2b3;--bd:#2b3441;--ac:#58a6ff;--gd:#3fb97a;--rd:#ff6b61;--gr:#2b3441}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:1200px;margin:0 auto;padding:16px}h1{font-size:22px;margin:0}.sub{color:var(--mu);margin:2px 0 14px}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:end;background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-bottom:14px}
+.bar label{display:flex;flex-direction:column;font-size:12px;color:var(--mu);gap:3px}
+select,button{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:6px 8px}
+button{cursor:pointer}button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.k{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px}.k b{display:block;font-size:22px;margin-top:2px}.k span{color:var(--mu);font-size:12px}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:14px}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px;min-width:0}.c h2{font-size:14px;margin:0 0 8px}
+.cv{position:relative;height:280px}.full{grid-column:1/-1}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:5px 6px;text-align:right;border-bottom:1px solid var(--bd)}th:first-child,td:first-child{text-align:left}
+.tw{overflow-x:auto}.neg{color:var(--rd)}.pos{color:var(--gd)}
+ul{margin:4px 0 0;padding-left:18px}li{margin:4px 0}.note{color:var(--mu);font-size:12px;margin-top:10px}
+</style></head><body><div class="w">
+<h1>Superstore Sales Performance Dashboard</h1>
+<div class="sub">Orders Jan 2014 to Dec 2017 · Filters update every card, chart and table</div>
+<div class="bar">
+<label>Year<select id="fy"></select></label><label>Region<select id="fr"></select></label>
+<label>Category<select id="fc"></select></label><label>Segment<select id="fs"></select></label>
+<button id="rs">Reset</button></div>
+<div class="kp" id="kp"></div>
+<div class="g">
+<div class="c full"><h2>Monthly sales and profit</h2><div class="cv"><canvas id="c1"></canvas></div></div>
+<div class="c"><h2>Profit by sub-category</h2><div class="cv" style="height:420px"><canvas id="c2"></canvas></div></div>
+<div class="c"><h2>Profit margin by region</h2><div class="cv" style="height:200px"><canvas id="c3"></canvas></div>
+<h2 style="margin-top:14px">Profit margin by discount level</h2><div class="cv" style="height:200px"><canvas id="c4"></canvas></div></div>
+<div class="c full"><h2>Top 10 <button id="tp" class="on">Products</button> <button id="tc">Customers</button> by sales</h2>
+<div class="tw"><table id="tb"></table></div></div>
+<div class="c full"><h2>Key takeaways (full dataset)</h2><ul>
+<li><b>Discounts destroy profit.</b> Orders at 30%+ discount are 14% of order lines but lose about $135K. Orders with no discount earn a 29.5% margin.</li>
+<li><b>Furniture is the weak category.</b> It brings $742K sales but only a 2.5% margin. Tables, Bookcases and Supplies lose money overall (Tables: -$17.7K at an average 26% discount).</li>
+<li><b>Central region lags</b> (7.9% margin vs 14.9% in West), consistent with its average discount of 24% vs 11% in West. Texas, Ohio, Pennsylvania and Illinois are the biggest loss-making states.</li>
+<li><b>Growth is real but seasonal.</b> Sales rose 29% in 2016 and 20% in 2017, and Sep, Nov and Dec bring 43% of annual sales.</li>
+<li><b>Loyal customer base.</b> 98% of customers reorder, and the top 10% of customers give 31% of sales.</li></ul>
+<div class="note">Source: Sample Superstore dataset (9,994 order lines). Margin = Profit ÷ Sales. Currency assumed USD.</div></div>
+</div></div>
+<script>
+const D=__DATA__;const $=i=>document.getElementById(i);
+const F={y:"",r:"",c:"",s:""};let mode="p";const ch={};
+const usd=n=>(n<0?"-":"")+"$"+Math.abs(Math.round(n)).toLocaleString("en-US");
+const pc=n=>n.toFixed(1)+"%";
+function fill(id,arr,all){$(id).innerHTML=`<option value="">${all}</option>`+arr.map(v=>`<option>${v}</option>`).join("")}
+fill("fy",D.years,"All years");fill("fr",D.reg,"All regions");fill("fc",D.cat,"All categories");fill("fs",D.seg,"All segments");
+[["fy","y"],["fr","r"],["fc","c"],["fs","s"]].forEach(([i,k])=>$(i).onchange=e=>{F[k]=e.target.value;draw()});
+$("rs").onclick=()=>{Object.keys(F).forEach(k=>F[k]="");["fy","fr","fc","fs"].forEach(i=>$(i).value="");draw()};
+$("tp").onclick=()=>{mode="p";$("tp").className="on";$("tc").className="";draw()};
+$("tc").onclick=()=>{mode="c";$("tc").className="on";$("tp").className="";draw()};
+function grp(rows,ix){const m=new Map();for(const r of rows){let g=m.get(r[ix]);if(!g){g={s:0,p:0,o:new Set()};m.set(r[ix],g)}g.s+=r[5];g.p+=r[6];g.o.add(r[9])}return m}
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function mk(id,type,opt){return new Chart($(id),{type,data:{labels:[],datasets:[]},options:Object.assign({responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}}},opt)})}
+function setc(k,type,labels,sets,opt){
+ Chart.defaults.color=css("--mu");Chart.defaults.borderColor=css("--gr");
+ if(!ch[k])ch[k]=mk(k,type,opt);const c=ch[k];c.data.labels=labels;c.data.datasets=sets;
+ if(sets.length>1)c.options.plugins.legend.display=true;c.update()}
+function draw(){
+ const rows=D.rows.filter(r=>(!F.y||D.ym[r[0]].slice(0,4)===F.y)&&(!F.r||D.reg[r[1]]===F.r)&&(!F.s||D.seg[r[2]]===F.s)&&(!F.c||D.cat[r[3]]===F.c));
+ let S=0,P=0,Q=0,Dc=0;const O=new Set();for(const r of rows){S+=r[5];P+=r[6];Q+=r[7];Dc+=r[8];O.add(r[9])}
+ const k=[["Sales",usd(S)],["Profit",usd(P)],["Profit margin",S?pc(P/S*100):"-"],["Orders",O.size.toLocaleString()],["Avg order value",O.size?usd(S/O.size):"-"],["Avg discount",rows.length?pc(Dc/rows.length*100):"-"]];
+ $("kp").innerHTML=k.map(([a,b])=>`<div class="k"><span>${a}</span><b class="${a==="Profit"&&P<0?"neg":""}">${b}</b></div>`).join("");
+ const gm=grp(rows,0),ms=[...gm.keys()].sort((a,b)=>a-b);
+ setc("c1","line",ms.map(i=>D.ym[i]),[{label:"Sales",data:ms.map(i=>Math.round(gm.get(i).s)),borderColor:css("--ac"),tension:.25,pointRadius:2},{label:"Profit",data:ms.map(i=>Math.round(gm.get(i).p)),borderColor:css("--gd"),tension:.25,pointRadius:2}]);
+ const gs=[...grp(rows,4).entries()].sort((a,b)=>a[1].p-b[1].p);
+ setc("c2","bar",gs.map(e=>D.sub[e[0]]),[{data:gs.map(e=>Math.round(e[1].p)),backgroundColor:gs.map(e=>e[1].p<0?css("--rd"):css("--gd"))}],{indexAxis:"y"});
+ const gr=[...grp(rows,1).entries()].sort((a,b)=>b[1].p/b[1].s-a[1].p/a[1].s);
+ setc("c3","bar",gr.map(e=>D.reg[e[0]]),[{data:gr.map(e=>+(e[1].p/e[1].s*100).toFixed(1)),backgroundColor:css("--ac")}]);
+ const bn=D.bands.map(()=>({s:0,p:0}));for(const r of rows){const d=r[8],i=d===0?0:d<=.2?1:d<=.3?2:d<=.5?3:4;bn[i].s+=r[5];bn[i].p+=r[6]}
+ setc("c4","bar",D.bands,[{data:bn.map(b=>b.s?+(b.p/b.s*100).toFixed(1):0),backgroundColor:bn.map(b=>b.p<0?css("--rd"):css("--gd"))}]);
+ const t=[...grp(rows,mode==="p"?10:11).entries()].sort((a,b)=>b[1].s-a[1].s).slice(0,10),nm=mode==="p"?D.prod:D.cust;
+ $("tb").innerHTML=`<tr><th>${mode==="p"?"Product":"Customer"}</th><th>Sales</th><th>Profit</th><th>Margin</th></tr>`+t.map(([i,g])=>`<tr><td>${nm[i]}</td><td>${usd(g.s)}</td><td class="${g.p<0?"neg":"pos"}">${usd(g.p)}</td><td>${pc(g.p/g.s*100)}</td></tr>`).join("");
+}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",draw);
+draw();
+</script></body></html>

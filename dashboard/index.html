@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Superstore Executive Analytics Engine</title>
+  
+  <!-- Fonts & External Libraries -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+  <style>
+    :root {
+      --bg-base: #090d16;
+      --bg-surface: #111827;
+      --bg-card: #1f2937;
+      --bg-card-hover: #283548;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(56, 189, 248, 0.3);
+      
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+
+      --accent-cyan: #38bdf8;
+      --accent-emerald: #10b981;
+      --accent-rose: #f43f5e;
+      --accent-amber: #f59e0b;
+      --accent-purple: #a855f7;
+
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+    }
+
+    [data-theme="light"] {
+      --bg-base: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f1f5f9;
+      --border-subtle: #e2e8f0;
+      --border-accent: rgba(2, 132, 199, 0.3);
+      
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-dim: #94a3b8;
+
+      --accent-cyan: #0284c7;
+      --accent-emerald: #059669;
+      --accent-rose: #e11d48;
+      --accent-amber: #d97706;
+      --accent-purple: #7c3aed;
+
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 40px;
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 24px 24px;
+    }
+
+    /* Navbar Header */
+    .header-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 20px;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+    }
+
+    .brand-title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin: 0;
+    }
+
+    .brand-subtitle {
+      color: var(--text-muted);
+      font-size: 13px;
+      margin: 2px 0 0;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-icon {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-icon:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-accent);
+      transform: translateY(-1px);
+    }
+
+    /* Executive Highlights Panel */
+    .exec-hero {
+      background: linear-gradient(135deg, rgba(31, 41, 55, 0.6) 0%, rgba(17, 24, 39, 0.8) 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .exec-hero-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-cyan);
+      margin-bottom: 12px;
+    }
+
+    .exec-hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .insight-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .insight-card b {
+      color: var(--text-main);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .filter-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .filter-item label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    select {
+      appearance: none;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      padding: 9px 32px 9px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      outline: none;
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 16px;
+      transition: all 0.2s ease;
+    }
+
+    select:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+    }
+
+    .btn-reset {
+      margin-top: auto;
+      background: rgba(244, 63, 94, 0.1);
+      border: 1px solid rgba(244, 63, 94, 0.2);
+      color: var(--accent-rose);
+      font-weight: 600;
+      padding: 9px 18px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-reset:hover {
+      background: rgba(244, 63, 94, 0.2);
+    }
+
+    /* KPI Cards Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .kpi-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--border-accent);
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: var(--border-subtle);
+    }
+
+    .kpi-card.sales::before { background: var(--accent-cyan); }
+    .kpi-card.profit::before { background: var(--accent-emerald); }
+    .kpi-card.margin::before { background: var(--accent-amber); }
+    .kpi-card.orders::before { background: var(--accent-purple); }
+    .kpi-card.discount::before { background: var(--accent-rose); }
+
+    .kpi-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-top: 6px;
+    }
+
+    /* Dashboard Grid Layout */
+    .grid-layout {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      min-width: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 20px;
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--accent-cyan);
+    }
+
+    .chart-container {
+      position: relative;
+      height: 320px;
+      width: 100%;
+    }
+
+    .span-12 { grid-column: span 12; }
+    .span-6 { grid-column: span 6; }
+
+    @media (max-width: 1024px) {
+      .span-6 { grid-column: span 12; }
+    }
+
+    /* Table Component */
+    .table-wrapper {
+      overflow-x: auto;
+      max-height: 360px;
+      margin-top: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 13px;
+    }
+
+    th {
+      background: var(--bg-card);
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 12px 14px;
+      text-align: right;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    th:first-child, td:first-child { text-align: left; }
+
+    td {
+      padding: 12px 14px;
+      text-align: right;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    tbody tr {
+      transition: background 0.15s ease;
+    }
+
+    tbody tr:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .text-pos { color: var(--accent-emerald); font-weight: 700; }
+    .text-neg { color: var(--accent-rose); font-weight: 700; }
+
+    .toggle-group {
+      display: flex;
+      background: var(--bg-card);
+      padding: 3px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .toggle-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .toggle-btn.active {
+      background: var(--accent-cyan);
+      color: #ffffff;
+    }
+
+    #loadingOverlay {
+      text-align: center;
+      padding: 80px 20px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Top Navigation Header -->
+  <header class="header-nav">
+    <div class="brand-group">
+      <div class="brand-icon">S</div>
+      <div>
+        <h1 class="brand-title">Superstore Intelligence</h1>
+        <p class="brand-subtitle">Executive Performance & Profit Optimization Engine</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-icon" id="themeToggle">🌓 Mode</button>
+    </div>
+  </header>
+
+  <!-- Executive Insights Banner -->
+  <section class="exec-hero">
+    <div class="exec-hero-title">⚡ Strategic Executive Takeaways</div>
+    <div class="exec-hero-grid">
+      <div class="insight-card">
+        <b>🚨 Discount Profit Erosion</b>
+        Orders with 20%+ discounts severe shrink profit margins, resulting in substantial cumulative bottom-line losses.
+      </div>
+      <div class="insight-card">
+        <b>📦 Category Drag</b>
+        Technology delivers top operating margins, while Furniture is dragged down by heavy discounting on Tables and Bookcases.
+      </div>
+      <div class="insight-card">
+        <b>📍 Regional Disparities</b>
+        Central region underperforms relative to West, primarily due to localized aggressive promotional discounting strategies.
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading State -->
+  <div id="loadingOverlay">⌛ Loading & Analyzing Dataset...</div>
+
+  <div id="dashboardApp" style="display:none;">
+    <!-- Filter Toolbar -->
+    <div class="filter-bar">
+      <div class="filter-item">
+        <label>Year</label>
+        <select id="fy"><option value="ALL">All Years</option></select>
+      </div>
+      <div class="filter-item">
+        <label>Region</label>
+        <select id="fr"><option value="ALL">All Regions</option></select>
+      </div>
+      <div class="filter-item">
+        <label>Category</label>
+        <select id="fc"><option value="ALL">All Categories</option></select>
+      </div>
+      <div class="filter-item">
+        <label>Segment</label>
+        <select id="fs"><option value="ALL">All Segments</option></select>
+      </div>
+      <button class="btn-reset" id="rs">Reset Filters</button>
+    </div>
+
+    <!-- KPI Metric Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card sales">
+        <div class="kpi-label">Total Revenue</div>
+        <div class="kpi-value" id="kpiSales">$0</div>
+      </div>
+      <div class="kpi-card profit">
+        <div class="kpi-label">Net Profit</div>
+        <div class="kpi-value" id="kpiProfit">$0</div>
+      </div>
+      <div class="kpi-card margin">
+        <div class="kpi-label">Profit Margin</div>
+        <div class="kpi-value" id="kpiMargin">0%</div>
+      </div>
+      <div class="kpi-card orders">
+        <div class="kpi-label">Total Orders</div>
+        <div class="kpi-value" id="kpiOrders">0</div>
+      </div>
+      <div class="kpi-card discount">
+        <div class="kpi-label">Avg Discount</div>
+        <div class="kpi-value" id="kpiDiscount">0%</div>
+      </div>
+    </div>
+
+    <!-- Charts Layout Grid -->
+    <div class="grid-layout">
+      <div class="card span-12">
+        <div class="card-header">
+          <h2 class="card-title">Revenue & Profit Trajectory <span class="badge">Monthly</span></h2>
+        </div>
+        <div class="chart-container"><canvas id="c1"></canvas></div>
+      </div>
+
+      <div class="card span-6">
+        <div class="card-header">
+          <h2 class="card-title">Profit Contribution by Sub-Category</h2>
+        </div>
+        <div class="chart-container" style="height:360px"><canvas id="c2"></canvas></div>
+      </div>
+
+      <div class="card span-6">
+        <div class="card-header">
+          <h2 class="card-title">Regional & Discount Margin Analysis</h2>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:16px; height:360px">
+          <div style="flex:1; position:relative;"><canvas id="c3"></canvas></div>
+          <div style="flex:1; position:relative;"><canvas id="c4"></canvas></div>
+        </div>
+      </div>
+
+      <div class="card span-12">
+        <div class="card-header">
+          <h2 class="card-title">Top Performers Breakdown</h2>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="btnProd">Top Products</button>
+            <button class="toggle-btn" id="btnCust">Top Customers</button>
+          </div>
+        </div>
+        <div class="table-wrapper"><table id="tb"></table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// --- Global Application State ---
+let rawData = [];
+let charts = {};
+let currentTableMode = 'products';
+
+// Global Chart styling defaults
+Chart.defaults.font.family = "'Plus Jakarta Sans', system-ui, sans-serif";
+Chart.defaults.color = '#9ca3af';
+
+// Theme Toggle Engine
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme');
+  const target = current === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', target);
+  
+  // Update Chart axis colors on theme toggle
+  const axisColor = target === 'light' ? '#64748b' : '#9ca3af';
+  const gridColor = target === 'light' ? '#e2e8f0' : 'rgba(255,255,255,0.08)';
+  
+  Object.values(charts).forEach(chart => {
+    if(chart.options.scales.x) {
+      chart.options.scales.x.ticks.color = axisColor;
+      chart.options.scales.x.grid.color = gridColor;
+    }
+    if(chart.options.scales.y) {
+      chart.options.scales.y.ticks.color = axisColor;
+      chart.options.scales.y.grid.color = gridColor;
+    }
+    chart.update();
+  });
+});
+
+const fmtCurrency = (v) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(v);
+const fmtPct = (v) => (v * 100).toFixed(1) + '%';
+
+// --- Step 1: Parse CSV Data ---
+Papa.parse('../data/superstore_clean.csv', {
+  download: true,
+  header: true,
+  skipEmptyLines: true,
+  dynamicTyping: true,
+  complete: function(results) {
+    rawData = results.data.map(row => {
+      const d = new Date(row['Order Date'] || row['order_date']);
+      return {
+        sales: parseFloat(row['Sales'] || row['sales'] || 0),
+        profit: parseFloat(row['Profit'] || row['profit'] || 0),
+        discount: parseFloat(row['Discount'] || row['discount'] || 0),
+        orderId: row['Order ID'] || row['order_id'],
+        year: d.getFullYear() ? d.getFullYear().toString() : 'Unknown',
+        yearMonth: d.getFullYear() ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}` : '',
+        region: row['Region'] || row['region'] || 'Unknown',
+        category: row['Category'] || row['category'] || 'Unknown',
+        subCategory: row['Sub-Category'] || row['sub_category'] || 'Unknown',
+        segment: row['Segment'] || row['segment'] || 'Unknown',
+        productName: row['Product Name'] || row['product_name'] || 'Unknown',
+        customerName: row['Customer Name'] || row['customer_name'] || 'Unknown'
+      };
+    });
+
+    document.getElementById('loadingOverlay').style.display = 'none';
+    document.getElementById('dashboardApp').style.display = 'block';
+
+    initFilters();
+    updateDashboard();
+  },
+  error: function() {
+    document.getElementById('loadingOverlay').innerHTML = `<b style="color:var(--accent-rose)">Failed to fetch <code>../data/superstore_clean.csv</code>. Ensure you are hosting via web server (e.g. <code>python -m http.server</code>).</b>`;
+  }
+});
+
+// --- Step 2: Initialize Dynamic Dropdowns ---
+function initFilters() {
+  const years = [...new Set(rawData.map(d => d.year))].sort();
+  const regions = [...new Set(rawData.map(d => d.region))].sort();
+  const categories = [...new Set(rawData.map(d => d.category))].sort();
+  const segments = [...new Set(rawData.map(d => d.segment))].sort();
+
+  populateDropdown('fy', years);
+  populateDropdown('fr', regions);
+  populateDropdown('fc', categories);
+  populateDropdown('fs', segments);
+
+  ['fy', 'fr', 'fc', 'fs'].forEach(id => {
+    document.getElementById(id).addEventListener('change', updateDashboard);
+  });
+
+  document.getElementById('rs').addEventListener('click', () => {
+    ['fy', 'fr', 'fc', 'fs'].forEach(id => document.getElementById(id).value = 'ALL');
+    updateDashboard();
+  });
+
+  document.getElementById('btnProd').addEventListener('click', () => {
+    currentTableMode = 'products';
+    document.getElementById('btnProd').classList.add('active');
+    document.getElementById('btnCust').classList.remove('active');
+    updateDashboard();
+  });
+
+  document.getElementById('btnCust').addEventListener('click', () => {
+    currentTableMode = 'customers';
+    document.getElementById('btnCust').classList.add('active');
+    document.getElementById('btnProd').classList.remove('active');
+    updateDashboard();
+  });
+}
+
+function populateDropdown(id, opts) {
+  const select = document.getElementById(id);
+  opts.forEach(opt => {
+    if(opt && opt !== 'Unknown') {
+      const el = document.createElement('option');
+      el.value = opt;
+      el.textContent = opt;
+      select.appendChild(el);
+    }
+  });
+}
+
+// --- Step 3: Main Filter & Analytics Loop ---
+function updateDashboard() {
+  const fy = document.getElementById('fy').value;
+  const fr = document.getElementById('fr').value;
+  const fc = document.getElementById('fc').value;
+  const fs = document.getElementById('fs').value;
+
+  const filtered = rawData.filter(d => {
+    return (fy === 'ALL' || d.year === fy) &&
+           (fr === 'ALL' || d.region === fr) &&
+           (fc === 'ALL' || d.category === fc) &&
+           (fs === 'ALL' || d.segment === fs);
+  });
+
+  renderKPIs(filtered);
+  renderMonthlyChart(filtered);
+  renderSubCategoryChart(filtered);
+  renderRegionalChart(filtered);
+  renderDiscountChart(filtered);
+  renderTable(filtered);
+}
+
+// --- Step 4: KPI Render ---
+function renderKPIs(data) {
+  const sales = data.reduce((acc, d) => acc + d.sales, 0);
+  const profit = data.reduce((acc, d) => acc + d.profit, 0);
+  const margin = sales > 0 ? (profit / sales) : 0;
+  const orders = new Set(data.map(d => d.orderId)).size;
+  const avgDiscount = data.length > 0 ? data.reduce((acc, d) => acc + d.discount, 0) / data.length : 0;
+
+  document.getElementById('kpiSales').textContent = fmtCurrency(sales);
+  
+  const pEl = document.getElementById('kpiProfit');
+  pEl.textContent = fmtCurrency(profit);
+  pEl.style.color = profit >= 0 ? 'var(--accent-emerald)' : 'var(--accent-rose)';
+
+  document.getElementById('kpiMargin').textContent = fmtPct(margin);
+  document.getElementById('kpiOrders').textContent = orders.toLocaleString();
+  document.getElementById('kpiDiscount').textContent = fmtPct(avgDiscount);
+}
+
+// --- Step 5: Render Charts ---
+function renderMonthlyChart(data) {
+  const agg = {};
+  data.forEach(d => {
+    if(!d.yearMonth) return;
+    if(!agg[d.yearMonth]) agg[d.yearMonth] = { sales: 0, profit: 0 };
+    agg[d.yearMonth].sales += d.sales;
+    agg[d.yearMonth].profit += d.profit;
+  });
+
+  const labels = Object.keys(agg).sort();
+  const sales = labels.map(l => agg[l].sales);
+  const profit = labels.map(l => agg[l].profit);
+
+  if(charts.c1) charts.c1.destroy();
+
+  const ctx = document.getElementById('c1').getContext('2d');
+  charts.c1 = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Revenue', data: sales, borderColor: '#38bdf8', backgroundColor: 'rgba(56, 189, 248, 0.08)', fill: true, tension: 0.35, borderWidth: 2 },
+        { label: 'Profit', data: profit, borderColor: '#10b981', backgroundColor: 'transparent', tension: 0.35, borderWidth: 2 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 6 } } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { grid: { color: 'rgba(255,255,255,0.05)' } }
+      }
+    }
+  });
+}
+
+function renderSubCategoryChart(data) {
+  const agg = {};
+  data.forEach(d => {
+    if(!agg[d.subCategory]) agg[d.subCategory] = 0;
+    agg[d.subCategory] += d.profit;
+  });
+
+  const sorted = Object.entries(agg).sort((a,b) => b[1] - a[1]);
+  const labels = sorted.map(d => d[0]);
+  const values = sorted.map(d => d[1]);
+  const colors = values.map(v => v >= 0 ? '#10b981' : '#f43f5e');
+
+  if(charts.c2) charts.c2.destroy();
+
+  const ctx = document.getElementById('c2').getContext('2d');
+  charts.c2 = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{ label: 'Profit ($)', data: values, backgroundColor: colors, borderRadius: 6 }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+function renderRegionalChart(data) {
+  const agg = {};
+  data.forEach(d => {
+    if(!agg[d.region]) agg[d.region] = { sales: 0, profit: 0 };
+    agg[d.region].sales += d.sales;
+    agg[d.region].profit += d.profit;
+  });
+
+  const labels = Object.keys(agg);
+  const margins = labels.map(l => agg[l].sales > 0 ? (agg[l].profit / agg[l].sales) * 100 : 0);
+
+  if(charts.c3) charts.c3.destroy();
+
+  const ctx = document.getElementById('c3').getContext('2d');
+  charts.c3 = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{ label: 'Regional Margin %', data: margins, backgroundColor: '#38bdf8', borderRadius: 6 }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { ticks: { callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+      }
+    }
+  });
+}
+
+function renderDiscountChart(data) {
+  const Bins = { '0% None': [0, 0], '1-15% Low': [0.001, 0.15], '16-25% Mid': [0.151, 0.25], '26%+ High': [0.251, 1] };
+  const agg = { '0% None': { sales: 0, profit: 0 }, '1-15% Low': { sales: 0, profit: 0 }, '16-25% Mid': { sales: 0, profit: 0 }, '26%+ High': { sales: 0, profit: 0 } };
+
+  data.forEach(d => {
+    for(const [bin, range] of Object.entries(Bins)) {
+      if(d.discount >= range[0] && d.discount <= range[1]) {
+        agg[bin].sales += d.sales;
+        agg[bin].profit += d.profit;
+        break;
+      }
+    }
+  });
+
+  const labels = Object.keys(agg);
+  const margins = labels.map(l => agg[l].sales > 0 ? (agg[l].profit / agg[l].sales) * 100 : 0);
+
+  if(charts.c4) charts.c4.destroy();
+
+  const ctx = document.getElementById('c4').getContext('2d');
+  charts.c4 = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{ label: 'Discount Margin %', data: margins, backgroundColor: margins.map(m => m >= 0 ? '#10b981' : '#f43f5e'), borderRadius: 6 }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { ticks: { callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+      }
+    }
+  });
+}
+
+// --- Step 6: Render Table ---
+function renderTable(data) {
+  const key = currentTableMode === 'products' ? 'productName' : 'customerName';
+  const agg = {};
+
+  data.forEach(d => {
+    const name = d[key];
+    if(!name || name === 'Unknown') return;
+    if(!agg[name]) agg[name] = { sales: 0, profit: 0, count: 0 };
+    agg[name].sales += d.sales;
+    agg[name].profit += d.profit;
+    agg[name].count += 1;
+  });
+
+  const sorted = Object.entries(agg)
+    .sort((a,b) => b[1].sales - a[1].sales)
+    .slice(0, 10);
+
+  const table = document.getElementById('tb');
+  let html = `
+    <thead>
+      <tr>
+        <th>${currentTableMode === 'products' ? 'Product Name' : 'Customer Name'}</th>
+        <th>Orders</th>
+        <th>Revenue</th>
+        <th>Profit</th>
+        <th>Margin</th>
+      </tr>
+    </thead>
+    <tbody>
+  `;
+
+  sorted.forEach(([name, m]) => {
+    const margin = m.sales > 0 ? m.profit / m.sales : 0;
+    const pClass = m.profit >= 0 ? 'text-pos' : 'text-neg';
+
+    html += `
+      <tr>
+        <td>${name}</td>
+        <td>${m.count}</td>
+        <td>${fmtCurrency(m.sales)}</td>
+        <td class="${pClass}">${fmtCurrency(m.profit)}</td>
+        <td class="${pClass}">${fmtPct(margin)}</td>
+      </tr>
+    `;
+  });
+
+  html += '</tbody>';
+  table.innerHTML = html;
+}
+</script>
+
+</body>
+</html>

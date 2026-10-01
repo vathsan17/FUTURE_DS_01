@@ -1,0 +1,388 @@
+{
+  "total_sales": 2297200.8603,
+  "total_profit": 286397.0217,
+  "margin": 12.467217240315605,
+  "orders": 5009,
+  "lines": 9994,
+  "customers": 793,
+  "avg_discount": 15.62027216329798,
+  "units": 37873,
+  "loss_line_share": 18.721232739643785,
+  "start": "2014-01-03",
+  "end": "2017-12-30",
+  "year": [
+    {
+      "Year": 2014,
+      "Sales": 484247.5,
+      "Profit": 49543.97,
+      "Orders": 969,
+      "AvgDiscount": 0.16,
+      "Margin": 10.23,
+      "YoY": NaN
+    },
+    {
+      "Year": 2015,
+      "Sales": 470532.51,
+      "Profit": 61618.6,
+      "Orders": 1038,
+      "AvgDiscount": 0.16,
+      "Margin": 13.1,
+      "YoY": -2.83
+    },
+    {
+      "Year": 2016,
+      "Sales": 609205.6,
+      "Profit": 81795.17,
+      "Orders": 1315,
+      "AvgDiscount": 0.15,
+      "Margin": 13.43,
+      "YoY": 29.47
+    },
+    {
+      "Year": 2017,
+      "Sales": 733215.26,
+      "Profit": 93439.27,
+      "Orders": 1687,
+      "AvgDiscount": 0.16,
+      "Margin": 12.74,
+      "YoY": 20.36
+    }
+  ],
+  "category": [
+    {
+      "Category": "Furniture",
+      "Sales": 741999.8,
+      "Profit": 18451.27,
+      "Orders": 1764,
+      "AvgDiscount": 0.17,
+      "Margin": 2.49
+    },
+    {
+      "Category": "Office Supplies",
+      "Sales": 719047.03,
+      "Profit": 122490.8,
+      "Orders": 3742,
+      "AvgDiscount": 0.16,
+      "Margin": 17.04
+    },
+    {
+      "Category": "Technology",
+      "Sales": 836154.03,
+      "Profit": 145454.95,
+      "Orders": 1544,
+      "AvgDiscount": 0.13,
+      "Margin": 17.4
+    }
+  ],
+  "region": [
+    {
+      "Region": "Central",
+      "Sales": 501239.89,
+      "Profit": 39706.36,
+      "Orders": 1175,
+      "AvgDiscount": 0.24,
+      "Margin": 7.92
+    },
+    {
+      "Region": "East",
+      "Sales": 678781.24,
+      "Profit": 91522.78,
+      "Orders": 1401,
+      "AvgDiscount": 0.15,
+      "Margin": 13.48
+    },
+    {
+      "Region": "South",
+      "Sales": 391721.9,
+      "Profit": 46749.43,
+      "Orders": 822,
+      "AvgDiscount": 0.15,
+      "Margin": 11.93
+    },
+    {
+      "Region": "West",
+      "Sales": 725457.82,
+      "Profit": 108418.45,
+      "Orders": 1611,
+      "AvgDiscount": 0.11,
+      "Margin": 14.94
+    }
+  ],
+  "segment": [
+    {
+      "Segment": "Consumer",
+      "Sales": 1161401.34,
+      "Profit": 134119.21,
+      "Orders": 2586,
+      "AvgDiscount": 0.16,
+      "Margin": 11.55
+    },
+    {
+      "Segment": "Corporate",
+      "Sales": 706146.37,
+      "Profit": 91979.13,
+      "Orders": 1514,
+      "AvgDiscount": 0.16,
+      "Margin": 13.03
+    },
+    {
+      "Segment": "Home Office",
+      "Sales": 429653.15,
+      "Profit": 60298.68,
+      "Orders": 909,
+      "AvgDiscount": 0.15,
+      "Margin": 14.03
+    }
+  ],
+  "subcat": [
+    {
+      "Sub-Category": "Tables",
+      "Sales": 206965.53,
+      "Profit": -17725.48,
+      "Orders": 307,
+      "AvgDiscount": 0.26,
+      "Margin": -8.56
+    },
+    {
+      "Sub-Category": "Bookcases",
+      "Sales": 114880.0,
+      "Profit": -3472.56,
+      "Orders": 224,
+      "AvgDiscount": 0.21,
+      "Margin": -3.02
+    },
+    {
+      "Sub-Category": "Supplies",
+      "Sales": 46673.54,
+      "Profit": -1189.1,
+      "Orders": 187,
+      "AvgDiscount": 0.08,
+      "Margin": -2.55
+    },
+    {
+      "Sub-Category": "Fasteners",
+      "Sales": 3024.28,
+      "Profit": 949.52,
+      "Orders": 215,
+      "AvgDiscount": 0.08,
+      "Margin": 31.4
+    },
+    {
+      "Sub-Category": "Machines",
+      "Sales": 189238.63,
+      "Profit": 3384.76,
+      "Orders": 112,
+      "AvgDiscount": 0.31,
+      "Margin": 1.79
+    },
+    {
+      "Sub-Category": "Labels",
+      "Sales": 12486.31,
+      "Profit": 5546.25,
+      "Orders": 346,
+      "AvgDiscount": 0.07,
+      "Margin": 44.42
+    },
+    {
+      "Sub-Category": "Art",
+      "Sales": 27118.79,
+      "Profit": 6527.79,
+      "Orders": 731,
+      "AvgDiscount": 0.07,
+      "Margin": 24.07
+    },
+    {
+      "Sub-Category": "Envelopes",
+      "Sales": 16476.4,
+      "Profit": 6964.18,
+      "Orders": 249,
+      "AvgDiscount": 0.08,
+      "Margin": 42.27
+    },
+    {
+      "Sub-Category": "Furnishings",
+      "Sales": 91705.16,
+      "Profit": 13059.14,
+      "Orders": 877,
+      "AvgDiscount": 0.14,
+      "Margin": 14.24
+    },
+    {
+      "Sub-Category": "Appliances",
+      "Sales": 107532.16,
+      "Profit": 18138.01,
+      "Orders": 451,
+      "AvgDiscount": 0.17,
+      "Margin": 16.87
+    },
+    {
+      "Sub-Category": "Storage",
+      "Sales": 223843.61,
+      "Profit": 21278.83,
+      "Orders": 777,
+      "AvgDiscount": 0.07,
+      "Margin": 9.51
+    },
+    {
+      "Sub-Category": "Chairs",
+      "Sales": 328449.1,
+      "Profit": 26590.17,
+      "Orders": 576,
+      "AvgDiscount": 0.17,
+      "Margin": 8.1
+    },
+    {
+      "Sub-Category": "Binders",
+      "Sales": 203412.73,
+      "Profit": 30221.76,
+      "Orders": 1316,
+      "AvgDiscount": 0.37,
+      "Margin": 14.86
+    },
+    {
+      "Sub-Category": "Paper",
+      "Sales": 78479.21,
+      "Profit": 34053.57,
+      "Orders": 1191,
+      "AvgDiscount": 0.07,
+      "Margin": 43.39
+    },
+    {
+      "Sub-Category": "Accessories",
+      "Sales": 167380.32,
+      "Profit": 41936.64,
+      "Orders": 718,
+      "AvgDiscount": 0.08,
+      "Margin": 25.05
+    },
+    {
+      "Sub-Category": "Phones",
+      "Sales": 330007.05,
+      "Profit": 44515.73,
+      "Orders": 814,
+      "AvgDiscount": 0.15,
+      "Margin": 13.49
+    },
+    {
+      "Sub-Category": "Copiers",
+      "Sales": 149528.03,
+      "Profit": 55617.82,
+      "Orders": 68,
+      "AvgDiscount": 0.16,
+      "Margin": 37.2
+    }
+  ],
+  "band": [
+    {
+      "DiscBand": "No discount",
+      "Sales": 1087908.47,
+      "Profit": 320987.6,
+      "Orders": 2644,
+      "AvgDiscount": 0.0,
+      "Margin": 29.51
+    },
+    {
+      "DiscBand": "Up to 20%",
+      "Sales": 846522.24,
+      "Profit": 100785.47,
+      "Orders": 2507,
+      "AvgDiscount": 0.2,
+      "Margin": 11.91
+    },
+    {
+      "DiscBand": "21-30%",
+      "Sales": 103226.66,
+      "Profit": -10369.28,
+      "Orders": 211,
+      "AvgDiscount": 0.3,
+      "Margin": -10.05
+    },
+    {
+      "DiscBand": "31-50%",
+      "Sales": 195314.76,
+      "Profit": -48447.73,
+      "Orders": 280,
+      "AvgDiscount": 0.42,
+      "Margin": -24.8
+    },
+    {
+      "DiscBand": "Over 50%",
+      "Sales": 64228.74,
+      "Profit": -76559.05,
+      "Orders": 685,
+      "AvgDiscount": 0.72,
+      "Margin": -119.2
+    }
+  ],
+  "top_products": [
+    {
+      "Product Name": "Canon imageCLASS 2200 Advanced Copier",
+      "Sales": 61599.82,
+      "Profit": 25199.93
+    },
+    {
+      "Product Name": "Fellowes PB500 Electric Punch Plastic Comb Binding Machine with Manual Bind",
+      "Sales": 27453.38,
+      "Profit": 7753.04
+    },
+    {
+      "Product Name": "Cisco TelePresence System EX90 Videoconferencing Unit",
+      "Sales": 22638.48,
+      "Profit": -1811.08
+    },
+    {
+      "Product Name": "HON 5400 Series Task Chairs for Big and Tall",
+      "Sales": 21870.58,
+      "Profit": 0.0
+    },
+    {
+      "Product Name": "GBC DocuBind TL300 Electric Binding System",
+      "Sales": 19823.48,
+      "Profit": 2233.51
+    }
+  ],
+  "worst_products": [
+    {
+      "Product Name": "Cubify CubeX 3D Printer Double Head Print",
+      "Sales": 11099.96,
+      "Profit": -8879.97
+    },
+    {
+      "Product Name": "Lexmark MX611dhe Monochrome Laser Printer",
+      "Sales": 16829.9,
+      "Profit": -4589.97
+    },
+    {
+      "Product Name": "Cubify CubeX 3D Printer Triple Head Print",
+      "Sales": 7999.98,
+      "Profit": -3839.99
+    }
+  ],
+  "worst_states": {
+    "Texas": -25729,
+    "Ohio": -16971,
+    "Pennsylvania": -15560,
+    "Illinois": -12608,
+    "North Carolina": -7491
+  },
+  "best_states": {
+    "Washington": 33403,
+    "New York": 74039,
+    "California": 76381
+  },
+  "hi_disc_lines": 1393,
+  "hi_disc_share": 13.938363017810687,
+  "hi_disc_profit": -135376.056,
+  "peak_months_share": 42.89587981746239,
+  "q4_share": 38.223804212110934,
+  "top10pct_cust_share": 30.615204736957757,
+  "repeat_cust_share": 98.48675914249685,
+  "region_discount": {
+    "Central": 24.0,
+    "East": 14.5,
+    "South": 14.7,
+    "West": 10.9
+  },
+  "tables_avg_discount": 26.128526645768023,
+  "avg_ship_days": 3.958174904942966
+}
