@@ -1,6 +1,8 @@
 # Future Interns - Data Science & Analytics
 ## Task 1: Business Sales Performance Analytics
 
+🚀 **Live Interactive Dashboard:** [View Live Dashboard](https://vathsan17.github.io/FUTURE_DS_01/dashboard/index.html)
+
 **Track Code:** DS | **Repository:** `FUTURE_DS_01`
 
 An end-to-end analysis of the Sample Superstore dataset (9,994 order lines, 2014-2017): cleaned in Python, explored with Pandas, delivered as a **client-ready interactive dashboard** and a **written report with recommendations**.
